@@ -1,0 +1,22 @@
+.Chatscreen__container{
+    flex: 1;
+    background-color: whitesmoke;
+    height:100vh;
+    border-left: 1px solid rgb(192, 192, 192);
+    display:flex;
+    flex-direction: column;
+    position:relative;
+}
+
+.Chatscreen__header{
+    height: 80px;
+    width:100%;
+    background-color:rgb(199, 199, 199);
+    border-bottom: 1px solid rgb(192, 192, 192);
+    position: absolute;
+    top: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}

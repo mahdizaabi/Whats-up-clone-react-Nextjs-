@@ -1,0 +1,16 @@
+.loadingBar {
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  height: 100vh;
+}
+
+.loading__img {
+  margin-bottom: 20px;
+}
+.loaderBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
