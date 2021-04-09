@@ -1,22 +1,51 @@
-.Chatscreen__container{
-    flex: 1;
-    background-color: whitesmoke;
-    height:100vh;
-    border-left: 1px solid rgb(192, 192, 192);
-    display:flex;
-    flex-direction: column;
-    position:relative;
+.header {
+  position: sticky;
+  background-color: white;
+  z-index: 100;
+  top: 0;
+  display: flex;
+  padding: 12px;
+  align-items: center;
+  border-bottom: 1px solid whitesmoke;
 }
 
-.Chatscreen__header{
-    height: 80px;
-    width:100%;
-    background-color:rgb(199, 199, 199);
-    border-bottom: 1px solid rgb(192, 192, 192);
-    position: absolute;
-    top: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+.header__informations {
+  margin-left: 15px;
+  flex: 1;
+}
+.header__informations > h3 {
+  margin-bottom: 3px;
+}
+.header__informations > p {
+  font-size: 14px;
+  color: gray;
+}
+
+.inputContainer {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  z-index: 100;
+}
+
+.inputContainer > .input {
+  flex: 1;
+  align-items: center;
+  position: sticky;
+  background-color: whitesmoke;
+  padding: 20px;
+  margin-left: 15px;
+  margin-right: 15px;
+  outline: 0;
+  outline-width: 0;
+  border: none;
+}
+
+.chatscreen__messagebox {
+  padding: 30px;
+  background-color: #e5ded8;
+  min-height: 90vh;
 }

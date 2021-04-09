@@ -1,40 +1,20 @@
 import { db } from "../firebase";
 import firebase from "firebase";
-import { useState } from "react";
-import { useCollection } from "react-firebase-hooks/firestore";
+import { useState, useEffect } from "react";
+import {
+  useCollection,
+  useCollectionData,
+} from "react-firebase-hooks/firestore";
+import { CodeSharp, MicNoneSharp } from "@material-ui/icons";
 
 const Fstore = () => {
-  const [contactEmail, setContactEmail] = useState("");
-  let listData = [];
-
-  const chatReference = db.collection("chats");
-  
-
-  chatReference.onSnapshot((documents) => {
-    const listChats = documents.docs.map((document) => document.data().users)
-    console.log(listChats)
-    
-    const findit = listChats.forEach((singlearray) => {const za = singlearray.find((email) => email === "zeze@zez.de")
-    if(za){
-      setContactEmail(za)
-    }
-  })
-    })
-console.log(contactEmail)
-  /*Exemple 1: */
-  // chatReference.get().then((documents) => {
-  //   var x = documents.forEach((doc) => console.log(doc.data().users.filter((itemInSmallArray) => itemInSmallArray !== "1655@holbertonschool.com")?.length))
-
-  //       console.log(x)
-  // })
-  // example 2 :
-  //let PromiseResult = chatSnapshot.then((documents) => documents.forEach((document) => document.data())).then((final) => console.log(final))
-
+  db.collection("chats").doc("0H0VTzX3JY7U0m6XsKF3").update({
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+  });
   return (
     <div>
-      <h1>this is it</h1>
+      <h1> hello </h1>
     </div>
   );
 };
-
 export default Fstore;

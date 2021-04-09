@@ -7,17 +7,19 @@ import * as EmailValidator from "email-validator";
 import { auth, db } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
-import Chat from "./Chat";
+import SmallChatBox from "./SmallChatBox";
 
 function Sidebar() {
   const [user] = useAuthState(auth);
-  /*  Get all the current logged in user CHATS*/
+  /* Query the database and retrieve all current loggedin user */
   const loadUserChats = db
     .collection("chats")
     .where("users", "array-contains", user.email);
 
   /* create a listener */
   const [chatsSnapshot] = useCollection(loadUserChats);
+
+  
   const createChat = () => {
     const input = prompt("Enter and Email");
 
@@ -27,25 +29,29 @@ function Sidebar() {
       !chatAlreadyExist(input) &&
       input != user.email
     ) {
-      /* we add a new chat to the DB chats collection if the current chat dosent already exist and is valid  */
-      /*console.log(chatsSnapshot?.docs.forEach((item) => console.log(item.data().users)))*/
       db.collection("chats").add({
         users: [user.email, input],
       });
     }
   };
 
+  /***
+   * chatAlreadyExist: Check if the Chat already exist
+   * @contactEmail(str): Email adress of the contact
+   * Return: if chat already exists returns True, otherwise False
+   *
+   ***/
+
   const chatAlreadyExist = (contactEmail) =>
     !!chatsSnapshot?.docs.find(
       (document) =>
-      document.data().users.find((user) => user === contactEmail)
-          ?.length > 0
+        document.data().users.find((user) => user === contactEmail)?.length > 0
     );
-    /*console.log(chatsSnapshot?.docs.forEach((document) => console.log(document.id)))*/
+  /*console.log(chatsSnapshot?.docs.forEach((document) => console.log(document.id)))*/
   return (
     <Container>
       <Header>
-        <UserAvatar onClick={() => auth.signOut()}></UserAvatar>
+        <UserAvatar src={user.photoURL} onClick={() => auth.signOut()}></UserAvatar>
         <IconsContainer>
           <ChatIcon></ChatIcon>
 
@@ -63,7 +69,7 @@ function Sidebar() {
       {/*  List of Chats   */}
 
       {chatsSnapshot?.docs.map((chat) => (
-        <Chat key={chat.id} id={chat.id} users={chat.data().users}></Chat>
+        <SmallChatBox key={chat.id} id={chat.id} users={chat.data().users}></SmallChatBox>
       ))}
     </Container>
   );
@@ -95,8 +101,13 @@ const SideBarButton = styled(Button)`
 
 const Container = styled.div`
   display: flex;
-  flex:0.4;
   flex-direction: column;
+  flex:0.45;
+  border-right: 1px solid whitesmoke;
+  height: 100vh;
+  min-width: 300px;
+  max-width: 350px;
+  overflow:scroll;
 `;
 
 const IconsContainer = styled.div``;
@@ -110,7 +121,6 @@ const Header = styled.div`
   align-items: center;
   padding: 15px;
   height: 80px;
-  background-color: green;
   border-bottom: 1px solid whitesmoke;
 `;
 
