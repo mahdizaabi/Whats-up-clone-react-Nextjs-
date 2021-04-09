@@ -11,7 +11,7 @@ export default function Home() {
       </Head>
     <div className="Home__container">
       <Sidebar></Sidebar>
-      <ChatScreen></ChatScreen>
+      
       </div>
     </div>
   );
