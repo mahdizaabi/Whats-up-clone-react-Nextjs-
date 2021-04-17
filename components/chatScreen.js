@@ -4,13 +4,17 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
-import { useCollection } from "react-firebase-hooks/firestore";
+import {
+  useCollection,
+  useCollectionData,
+} from "react-firebase-hooks/firestore";
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
 import MicIcon from "@material-ui/icons/Mic";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import firebase from "firebase";
 import Message from "./Message";
-
+import getContactEmail from "../utils/getContactEmail";
+import TimeAgo from "timeago-react";
 const ChatScreen = ({ chat, messages }) => {
   const [user] = useAuthState(auth);
   const router = useRouter();
@@ -22,8 +26,19 @@ const ChatScreen = ({ chat, messages }) => {
       .orderBy("timestamp", "asc")
   );
   const [input, setInput] = useState("");
+  const endOfMessagesRef = useRef(null);
+
+  const [recipSnapshot] = useCollection(
+    db
+      .collection("users")
+      .where("email", "==", getContactEmail(chat.users, user))
+  );
 
   const showMessages = () => {
+    {
+      /* CLIENT SIDE RENDERING TO OUTPUT DATA after the ssr: SWITCHING!!!    */
+    }
+
     if (messagesSnapshot) {
       return messagesSnapshot.docs.map((message) => (
         <Message
@@ -36,13 +51,25 @@ const ChatScreen = ({ chat, messages }) => {
         ></Message>
       ));
     } else {
+      {
+        /* SERVER SIDE RENDERING TO OUTPUT DTA IMMEDITLY    */
+      }
       return JSON.parse(messages).map((message) => {
         <Message
-          
+          key={message.id}
+          user={message.user}
+          message={message}
         ></Message>;
       });
     }
   };
+
+  const ScrollToBottom = () => {
+    endOfMessagesRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    })
+  }
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -59,14 +86,35 @@ const ChatScreen = ({ chat, messages }) => {
       photoURL: user.photoURL,
     });
     setInput("");
+    ScrollToBottom()
   };
+
+  const recipient = recipSnapshot?.docs?.[0]?.data();
+
+  const RecipientEmail = getContactEmail(chat.users, user);
   return (
     <div className="Chatscreen__container">
       <div className="header">
-        <Avatar></Avatar>
+        {recipient ? (
+          <Avatar src={recipient.photoURL}></Avatar>
+        ) : (
+          <Avatar> {RecipientEmail[0]} </Avatar>
+        )}
+
         <div className="header__informations">
-          <h3>Recipient email</h3>
-          <p>Last seen ...</p>
+          <h3>{RecipientEmail}</h3>
+          {recipSnapshot ? (
+            <p>
+              Last active: {""}
+              {recipient?.lastSeen?.toDate() ? (
+                <TimeAgo datetime={recipient?.lastSeen?.toDate()}></TimeAgo>
+              ) : (
+                "Unavailable"
+              )}
+            </p>
+          ) : (
+            <p>loading last active</p>
+          )}
         </div>
 
         <div className="headericons">
@@ -81,7 +129,7 @@ const ChatScreen = ({ chat, messages }) => {
       </div>
       <div className="chatscreen__messagebox">
         {showMessages()}
-        <div className="endofmessage"></div>
+        <div className="endofmessage" ref={endOfMessagesRef}></div>
       </div>
 
       <form className="inputContainer" onSubmit={(e) => e.preventDefault()}>
@@ -100,5 +148,4 @@ const ChatScreen = ({ chat, messages }) => {
     </div>
   );
 };
-
 export default ChatScreen;

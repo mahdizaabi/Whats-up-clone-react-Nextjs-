@@ -24,7 +24,7 @@ function SmallChatBox({ id, users }) {
    * Return:
    *
    ***/
-
+  
   const openChatWindow = (chatId) => {
     router.push(`/chat/${chatId}`);
   };

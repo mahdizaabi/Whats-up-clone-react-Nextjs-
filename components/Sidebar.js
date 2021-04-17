@@ -10,8 +10,8 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import SmallChatBox from "./SmallChatBox";
 
 function Sidebar() {
+  
   const [user] = useAuthState(auth);
-  /* Query the database and retrieve all current loggedin user */
   const loadUserChats = db
     .collection("chats")
     .where("users", "array-contains", user.email);
